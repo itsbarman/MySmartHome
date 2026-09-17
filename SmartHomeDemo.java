@@ -10,25 +10,18 @@ public class SmartHomeDemo {
         Lamp lampe2 = new Lamp("Lampe 2", 70);
         Thermostat termostat1 = new Thermostat("Termostat 1", 19.5);
 
-        SmartDevice[] devices = {lampe1, lampe2, termostat1};
+        SmartHome home = new SmartHome();
+        home.addDevice(lampe1);
+        home.addDevice(lampe2);
+        home.addDevice(termostat1);
 
         while (true) {
             System.out.println("\n=== SMART HOME MENY ===");
-            for (int i = 0; i < devices.length; i++) {
-                if (devices[i] instanceof Lamp) {
-                    Lamp lamp = (Lamp) devices[i];
-                    System.out.println((i + 1) + ". " + lamp.getName()
-                            + " - Lampe - " + (lamp.isOn() ? "på" : "av")
-                            + " - Lysstyrke: " + lamp.getBrightness() + "%");
-                } else if (devices[i] instanceof Thermostat) {
-                    Thermostat thermostat = (Thermostat) devices[i];
-                    System.out.println((i + 1) + ". " + thermostat.getName()
-                            + " - Termostat - " + (thermostat.isOn() ? "på" : "av")
-                            + " - Temperatur: " + thermostat.getTemperature() + "C");
-                }
-            }
+            home.displayAllDevices();
 
-            System.out.println((devices.length + 1) + ". Avslutt");
+            System.out.println((home.getDeviceCount() + 1) + ". Slå på alle enheter");
+            System.out.println((home.getDeviceCount() + 2) + ". Slå av alle enheter");
+            System.out.println((home.getDeviceCount() + 3) + ". Avslutt");
             System.out.print("Velg en enhet: ");
 
             int valg;
@@ -39,17 +32,29 @@ public class SmartHomeDemo {
                 continue;
             }
 
-            if (valg == devices.length + 1) {
+            if (valg == home.getDeviceCount() + 1) {
+                home.turnOnAllDevices();
+                System.out.println("Alle enheter er slått på.");
+                continue;
+            }
+
+            if (valg == home.getDeviceCount() + 2) {
+                home.turnOffAllDevices();
+                System.out.println("Alle enheter er slått av.");
+                continue;
+            }
+
+            if (valg == home.getDeviceCount() + 3) {
                 System.out.println("Programmet avsluttes.");
                 break;
             }
 
-            if (valg < 1 || valg > devices.length) {
+            if (valg < 1 || valg > home.getDeviceCount()) {
                 System.out.println("Ugyldig valg. Prøv igjen.");
                 continue;
             }
 
-            SmartDevice valgtEnhet = devices[valg - 1];
+            SmartDevice valgtEnhet = home.getDevice(valg - 1);
 
             if (valgtEnhet instanceof Lamp) {
                 Lamp valgtLampe = (Lamp) valgtEnhet;
@@ -86,10 +91,10 @@ public class SmartHomeDemo {
 
                         case 2:
                             if (valgtLampe.isOn()) {
-                                valgtLampe.turnOff();
+                                home.turnOffDevice(valgtLampe);
                                 System.out.println("Lampe slått av.");
                             } else {
-                                valgtLampe.turnOn();
+                                home.turnOnDevice(valgtLampe);
                                 System.out.println("Lampe slått på.");
                             }
                             break;
@@ -144,10 +149,10 @@ public class SmartHomeDemo {
 
                         case 2:
                             if (valgtThermostat.isOn()) {
-                                valgtThermostat.turnOff();
+                                home.turnOffDevice(valgtThermostat);
                                 System.out.println("Termostat slått av.");
                             } else {
-                                valgtThermostat.turnOn();
+                                home.turnOnDevice(valgtThermostat);
                                 System.out.println("Termostat slått på.");
                             }
                             break;

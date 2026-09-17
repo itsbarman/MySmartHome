@@ -3,40 +3,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SmartHome {
-    private List<String> devices;
+    private List<SmartDevice> devices;
 
     public SmartHome() {
-        // Opprett samlingen
         devices = new ArrayList<>();
     }
 
     public void addDevice(SmartDevice device) {
-        // Legg til en enhet
-        devices.add(device.getName());
+        devices.add(device);
     }
     
     public void displayAllDevices() {
-        // gå gjennom alle enhetene, kall displayStatus() på hver enhet
-        for (String deviceName : devices) {
-            System.out.println("Device: " + deviceName);
+        for (int i = 0; i < devices.size(); i++) {
+            SmartDevice device = devices.get(i);
+            System.out.print((i + 1) + ". ");
+            device.displayStatus();
         }
     }
 
     public void turnOnDevice(SmartDevice device) {
-        // Slå på vsalgt enhet
         device.turnOn();
     }
 
+    public void turnOnAllDevices() {
+        for (SmartDevice device : devices) {
+            device.turnOn();
+        }
+    }
+
     public void turnOffDevice(SmartDevice device) {
-        // Slå av valgt enhet
         device.turnOff();
     }
 
     public void turnOffAllDevices() {
-        // Slå av alle enheter
-        for (String deviceName : devices) {
-            System.out.println("Turning off device: " + deviceName);
+        for (SmartDevice device : devices) {
+            device.turnOff();
         }
+    }
+
+    public int getDeviceCount() {
+        return devices.size();
+    }
+
+    public SmartDevice getDevice(int index) {
+        return devices.get(index);
     }
 
 }
