@@ -16,7 +16,7 @@ public class SmartHomeDemo {
         home.addDevice(termostat1);
 
         while (true) {
-            System.out.println("\n=== SMART HOME MENY ===");
+            System.out.println(" SMART HOME MENY ");
             home.displayAllDevices();
 
             System.out.println((home.getDeviceCount() + 1) + ". Slå på alle enheter");
@@ -60,7 +60,7 @@ public class SmartHomeDemo {
                 Lamp valgtLampe = (Lamp) valgtEnhet;
 
                 while (true) {
-                    System.out.println("\n=== MENY FOR " + valgtLampe.getName().toUpperCase() + " ===");
+                    System.out.println("MENY FOR " + valgtLampe.getName().toUpperCase());
                     System.out.println("1. Endre lysstyrke");
                     System.out.println("2. Slå på/av");
                     System.out.println("3. Vis status");
