@@ -10,7 +10,7 @@ public class Lamp extends SmartDevice implements Schedulable {
         this.scheduledTime = null;
     }
 
-
+    // Må ha gyldig verdi for lysstyrke
     public void setBrightness(int brightness) {
     if (brightness < 0 || brightness > 100) {
         throw new IllegalArgumentException("Lysstyrke må være mellom 0 og 100");
