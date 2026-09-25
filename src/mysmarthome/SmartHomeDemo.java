@@ -42,6 +42,7 @@ public class SmartHomeDemo {
             System.out.println(" SMART HOME MENY ");
             home.displayAllDevices();
 
+            // +1,+2,+3 er fordi lys og termostat vises først i menyen
             System.out.println((home.getDeviceCount() + 1) + ". Slå på alle enheter");
             System.out.println((home.getDeviceCount() + 2) + ". Slå av alle enheter");
             System.out.println((home.getDeviceCount() + 3) + ". Avslutt");

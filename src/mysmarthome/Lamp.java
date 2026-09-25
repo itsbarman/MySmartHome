@@ -32,7 +32,7 @@ public class Lamp extends SmartDevice implements Schedulable {
         return scheduledTime;
     }
 
-
+    // Viser status for lampen
     @Override 
     public void displayStatus() {
         System.out.println("Lampe: " + getName()
