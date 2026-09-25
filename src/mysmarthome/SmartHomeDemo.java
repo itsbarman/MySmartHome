@@ -1,5 +1,7 @@
 package mysmarthome;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class SmartHomeDemo {
@@ -9,11 +11,32 @@ public class SmartHomeDemo {
         Lamp lampe1 = new Lamp("Lampe 1", 40);
         Lamp lampe2 = new Lamp("Lampe 2", 70);
         Thermostat termostat1 = new Thermostat("Termostat 1", 19.5);
+        MotionSensor bevegelsessensor = new MotionSensor("Gang sensor");
 
         SmartHome home = new SmartHome();
         home.addDevice(lampe1);
         home.addDevice(lampe2);
         home.addDevice(termostat1);
+        home.addDevice(bevegelsessensor);
+
+        List<Schedulable> planlagteEnheter = new ArrayList<>();
+        planlagteEnheter.add(lampe1);
+        planlagteEnheter.add(termostat1);
+
+        String[] planlagteTider = {"07:00", "06:30"};
+        for (int i = 0; i < planlagteEnheter.size(); i++) {
+            home.scheduleDevice(planlagteEnheter.get(i), planlagteTider[i]);
+        }
+
+        bevegelsessensor.detectMotion();
+        System.out.println("Planlagte tider:");
+        for (Schedulable enhet : planlagteEnheter) {
+            System.out.println(enhet instanceof SmartDevice
+                ? ((SmartDevice) enhet).getName() + ": " + enhet.getScheduledTime()
+                : enhet.getScheduledTime());
+        }
+        System.out.println("Bevegelse i gangen: "
+            + (bevegelsessensor.isMotionDetected() ? "oppdaget" : "ikke oppdaget"));
 
         while (true) {
             System.out.println(" SMART HOME MENY ");
@@ -173,6 +196,9 @@ public class SmartHomeDemo {
                         break;
                     }
                 }
+            } else if (valgtEnhet instanceof MotionSensor) {
+                MotionSensor valgtSensor = (MotionSensor) valgtEnhet;
+                valgtSensor.displayStatus();
             }
         }
 

@@ -1,11 +1,13 @@
 package mysmarthome;
 
-public class Lamp extends SmartDevice {
+public class Lamp extends SmartDevice implements Schedulable {
     private int brightness;
+    private String scheduledTime;
     
     public Lamp(String name, int brightness) {
         super(name);
         this.brightness = brightness;
+        this.scheduledTime = null;
     }
 
 
@@ -20,12 +22,23 @@ public class Lamp extends SmartDevice {
         return this.brightness;
     }
 
+    @Override
+    public void schedule(String time) {
+        this.scheduledTime = time;
+    }
+
+    @Override
+    public String getScheduledTime() {
+        return scheduledTime;
+    }
+
 
     @Override 
     public void displayStatus() {
         System.out.println("Lampe: " + getName()
             + ", Status: " + (isOn() ? "på" : "av")
-            + ", Lysstyrke: " + brightness);
+            + ", Lysstyrke: " + brightness
+            + ", Planlagt tid: " + (scheduledTime == null ? "ingen" : scheduledTime));
 
 
     }

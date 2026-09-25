@@ -1,5 +1,88 @@
 # Oppgave 2 - Ett hjem, én oversikt
 
+# Oppgave 3 - Huset begynner å hjelpe til
+
+## Mål
+
+Lampen og termostaten kan lagre en planlagt tid gjennom det felles `Schedulable`-interfacet. Bevegelsessensoren er en vanlig `SmartDevice`, men har bare ansvar for å rapportere om bevegelse er oppdaget.
+
+## Designskisse
+
+```mermaid
+classDiagram
+	class SmartDevice {
+		<<abstract-like base class>>
+		-String name
+		-boolean isOn
+		+turnOn()
+		+turnOff()
+		+displayStatus()
+	}
+	class Schedulable {
+		<<interface>>
+		+schedule(String time)
+		+getScheduledTime() String
+	}
+	class Lamp
+	class Thermostat
+	class MotionSensor
+	class SmartHome {
+		-List~SmartDevice~ devices
+		+addDevice(SmartDevice device)
+		+scheduleDevice(Schedulable device, String time)
+	}
+
+	SmartDevice <|-- Lamp
+	SmartDevice <|-- Thermostat
+	SmartDevice <|-- MotionSensor
+	Schedulable <|.. Lamp
+	Schedulable <|.. Thermostat
+	SmartHome o-- SmartDevice
+```
+
+`SmartHome` bruker fortsatt `SmartDevice` for den samlede oversikten. Bare typer som faktisk støtter planlegging implementerer `Schedulable`. Derfor trenger ikke `MotionSensor` eller en senere ikke-planleggbar enhet å inneholde en irrelevant planleggingsfunksjon. En ny planleggbar type implementerer bare `Schedulable` og kan deretter brukes av samme planleggingskode.
+
+## Slik kjører du oppgaven
+
+Åpne PowerShell i mappen `mysmarthome` og kjør:
+
+```powershell
+New-Item -ItemType Directory -Force -Path out
+javac -d out src\mysmarthome\*.java
+java -cp out mysmarthome.SmartHomeDemo
+```
+
+Ved oppstart viser demoen at:
+
+1. `Lampe 1` er planlagt til `07:00`.
+2. `Termostat 1` er planlagt til `06:30`.
+3. Begge enhetene planlegges gjennom samme `List<Schedulable>` og samme løkke.
+4. `Gang sensor` er registrert i `SmartHome` og viser `Bevegelse: oppdaget`.
+5. Alle fire enhetene vises i hjemmets samlede oversikt.
+
+Velg `1` eller `3` i hovedmenyen for å se og endre status på lampe eller termostat. Velg `4` for å vise sensorstatus. Velg `5` eller `6` for å slå alle enheter på eller av, og `7` for å avslutte.
+
+## Ansvarsfordeling i oppgave 3
+
+| Klasse/type | Ansvar |
+| --- | --- |
+| `SmartDevice` | Felles navn, på/av-status og statusvisning. |
+| `Schedulable` | Felles kontrakt for å lagre og lese planlagt tid. |
+| `Lamp` | Lysstyrke og planlagt tid. |
+| `Thermostat` | Temperatur og planlagt tid. |
+| `MotionSensor` | Registrerer og rapporterer bevegelse; har ingen planleggingsfunksjon. |
+| `SmartHome` | Samler alle enheter og videresender planlegging til en `Schedulable`. |
+| `SmartHomeDemo` | Oppretter objektene og demonstrerer kravene. |
+
+## Kontroll før innlevering
+
+- Lampen og termostaten har to forskjellige planlagte tider.
+- Tidene kan leses fra objektene og vises i oversikten.
+- Planleggbare enheter behandles samlet gjennom `Schedulable`.
+- Bevegelsessensoren er med i samme `SmartHome`-samling.
+- Sensoren kan vise både vanlig enhetsstatus og om bevegelse er oppdaget.
+- `MotionSensor` har ikke planleggingsfelt eller planleggingsmetoder.
+
 ## Mål
 
 Utvid programmet slik at et `SmartHome` samler og koordinerer et varierende antall `SmartDevice`-objekter. `Lamp` og `Thermostat` skal fortsatt ha ansvar for sine egne egenskaper, som lysstyrke og temperatur.

@@ -41,6 +41,10 @@ public class SmartHome {
         }
     }
 
+    public void scheduleDevice(Schedulable device, String time) {
+        device.schedule(time);
+    }
+
     public int getDeviceCount() {
         return devices.size();
     }
