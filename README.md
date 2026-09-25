@@ -131,3 +131,23 @@ Utvid programmet slik at et `SmartHome` samler og koordinerer et varierende anta
 - Én valgt enhet kan slås på eller av uten å endre de andre.
 - Alle enheter kan slås av med ett metodekall.
 - `SmartHome` inneholder ikke lampens lysstyrke eller termostatens temperatur som egne felt.
+
+# Oppgave 4 - Smarthuset på MyPhone
+
+## Hva som er lagt til
+
+`SmartHomeApp` arver fra `App` og får det eksisterende `SmartHome`-objektet inn i konstruktøren. `MyPhone` lagrer selve app-objektene, slik at telefonen kan installere og starte SmartHome-appen.
+
+Appen kan vise enhetene, slå på en enhet, endre lysstyrke på en lampe, endre temperatur på en termostat og planlegge en `Schedulable`-enhet. Endringene gjøres på de samme objektene som allerede ligger i `SmartHome`.
+
+## Kjøring
+
+Kjør fra mappen `mysmarthome`:
+
+```powershell
+New-Item -ItemType Directory -Force -Path out
+javac -d out src\mysmarthome\*.java myphone\*.java
+java -cp out mysmarthome.myphone.MyPhoneDemo
+```
+
+Demoen installerer og starter appen på telefonen. Deretter endrer appen lampen til på, setter lysstyrken til `80`, setter termostaten til `21.0` og planlegger lampen til `07:00`. Til slutt vises hjemmet på nytt for å kontrollere at endringene er beholdt.

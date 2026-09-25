@@ -11,8 +11,7 @@ public class MyPhone {
     private int storageCapacity;
     private int batteryLevel;
     private String headset;
-    private String appName;
-    private ArrayList<String> app;
+    private ArrayList<App> apps;
     private ArrayList<String> headsets;
 
     // Constructor
@@ -21,7 +20,7 @@ public class MyPhone {
         this.model = model;
         this.storageCapacity = storageCapacity;
         setBatteryLevel(batteryLevel);
-        this.app = new ArrayList<>();
+        this.apps = new ArrayList<>();
         this.headsets = new ArrayList<>();
     }
 
@@ -85,20 +84,30 @@ public class MyPhone {
 public void addApps(ArrayList<String> apps) {
     for (String app : apps) {
         System.out.println("Installing app: " + app);
-        this.app.add(app);
+        this.apps.add(new App(app, "ukjent"));
     }
 }
 
  public void installApp(App app) {
      System.out.println("Installing app: " + app.getAppName());
-     this.app.add(app.getAppName());
+     this.apps.add(app);
      System.out.println("App installed: " + app.getAppName());
+ }
+
+ public void startApp(String appName) {
+    for (App app : apps) {
+        if (app.getAppName().equals(appName)) {
+            app.run();
+            return;
+        }
+    }
+    System.out.println("App not found: " + appName);
  }
 
  public void listApps() {
     System.out.println("Installed apps:");
-    for (String app : this.app) {
-        System.out.println("App: " + app);
+    for (App app : this.apps) {
+        System.out.println("App: " + app.getAppName());
     }
 }
 
