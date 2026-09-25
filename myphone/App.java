@@ -1,4 +1,4 @@
-package myphone;
+package mysmarthome.myphone;
 public class App {
     private String appName;
     private String version;

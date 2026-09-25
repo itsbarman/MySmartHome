@@ -1,4 +1,4 @@
-package myphone;
+package mysmarthome.myphone;
 public class Headset {
     private boolean connected;
 

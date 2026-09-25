@@ -1,4 +1,4 @@
-package myphone;
+package mysmarthome.myphone;
 public class MyPhoneDemo {
     public static void main(String[] args) {
         MyPhone phone = new MyPhone("Samsung", "Galaxy S21",

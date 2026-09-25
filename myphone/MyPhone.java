@@ -1,6 +1,7 @@
-package myphone;
+package mysmarthome.myphone;
 import java.util.ArrayList;
-import myphone.App;
+
+import mysmarthome.myphone.App;
 
 public class MyPhone {
     private static final int DEFAULT_CHARGE = 20;  
