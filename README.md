@@ -1,5 +1,5 @@
 # MySmartHome
-
+[Github](https://github.com/itsbarman/MySmartHome)
 Et lite Java-prosjekt som demonstrerer smarte enheter i ett hjem, styrt både direkte og via en app på `MyPhone`. Hovedprogrammet viser en morgen der lys og varme justeres før alle enhetene slås av ved avreise.
 
 
