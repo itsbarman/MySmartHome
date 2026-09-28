@@ -154,31 +154,21 @@ Demoen installerer og starter appen på telefonen. Deretter endrer appen lampen 
 
 # Oppgave 5 – Demo-dag: En morgen i MySmartHome
 
-## Hva gjenstår?
+## Slik fungerer den ferdige morgen-demoen
 
-Oppgave 3-demoen har allerede to lamper, en termostat, en bevegelsessensor og to forskjellige planlagte tider. Oppgave 4-demoen installerer SmartHome-appen på MyPhone, men har bare én lampe og én termostat. **Ingen av demoene viser ennå hele morgenhistorien gjennom appen.** I tillegg har `SmartHome` en `turnOffAllDevices()`-metode, men `SmartHomeApp` har foreløpig ingen metode som lar brukeren kalle den fra appen.
+`MorningDemo` er en egen, automatisk demonstrasjon. De eldre demoene for oppgave 3 og 4 er beholdt uendret. Her er alle fire enhetene registrert i **samme** `SmartHome` og samme hjem er koblet til appen på `MyPhone`.
 
-| Krav | Status nå | Det du må gjøre |
-| --- | --- | --- |
-| To lamper, én termostat og én bevegelsessensor i samme hjem | Finnes i `SmartHomeDemo` | Opprett og registrer alle fire i **ett** `SmartHome`-objekt i morgen-demoen. |
-| SmartHome-app installert og startet på MyPhone | Finnes i `MyPhoneDemo` | Gi appen akkurat dette hjemmet, installer app-objektet med `installApp()` og start det med `startApp("SmartHome")`. |
-| To forskjellige planlagte tider | Finnes i `SmartHomeDemo` | Planlegg for eksempel termostaten til `06:30` og en lampe til `07:00` gjennom `SmartHomeApp.schedule()`. Vis tidene med `getScheduledTime()` eller i oversikten. |
-| Felles handling og minst to typespesifikke handlinger via appen | Appen kan slå på/av en enhet, endre lysstyrke og temperatur | Bruk `turnOn()`/`turnOff()` samt både `changeBrightness()` og `changeTemperature()` i morgenhistorien. Legg til en app-metode for å slå av alle ved avreise. |
-| Sensorstatus og tydelig sluttoversikt | Sensor og statusvisning finnes | Vis `isMotionDetected()`/`displayStatus()` og avslutt med `home.displayAllDevices()` etter avreise. |
+1. Hjemmet opprettes med `Entrélys` (lysstyrke 30), `Kjøkkenlys` (50), `Stuevarme` (temperatur 19.5) og `Gangsensor` (ingen bevegelse). Alle enhetene starter av. Appens indekser er **nullbaserte**: 0, 1, 2 og 3 i denne rekkefølgen; hjemmets utskrift nummererer fra 1.
+2. Telefonen installerer `SmartHomeApp("1.0", home)` og starter den med `startApp("SmartHome")`. Startstatus skrives ut via appens `run()`.
+3. Gjennom appen planlegges termostaten til `06:30` og entrélyset til `07:00`. Begge tidene skrives ut. `schedule()` **lagrer** klokkeslettet, men utfører ikke automatisk en på/av-handling når tiden kommer.
+4. Brukeren slår på termostaten, begge lampene og sensoren gjennom appens `turnOn()`. Gjennom de typespesifikke app-metodene `changeTemperature()` og `changeBrightness()` settes temperaturen til 21.0 og entrélyset til 80. Sensoren registrerer bevegelse, og både sensorstatus og hjemmets mellomstatus vises.
+5. Ved avreise nullstilles bevegelsen med `clearMotion()`. Brukeren kaller appens felles `turnOffAll()`; den delegerer til `SmartHome.turnOffAllDevices()` slik at alle enhetene slås av med én handling. Til slutt viser `home.displayAllDevices()` hele hjemmet.
 
-## Forslag til morgenhistorie
+`MotionSensor` har egen bevegelsestilstand i tillegg til vanlig på/av-status. Derfor nullstilles bevegelsen eksplisitt før felles avslag; `turnOffAll()` endrer ikke sensorens historikk. Planlagte tider, lysstyrke og temperatur beholdes når enhetene slås av.
 
-1. Lag ett hjem med `Entrélys` (lysstyrke 30), `Kjøkkenlys` (lysstyrke 50), `Stuevarme` (temperatur 19.5) og `Gangsensor` (ingen bevegelse). Registrer dem i denne rekkefølgen; appens enhetsnumre er **nullbaserte**: 0, 1, 2 og 3.
-2. Opprett `MyPhone` og `SmartHomeApp("1.0", home)`, installer **samme app-objekt** på telefonen og start den. `startApp()` viser hjemmet via appens `run()`; videre handlinger kan kalles på den samme `SmartHomeApp`-referansen.
-3. Planlegg `Stuevarme` til `06:30` med `schedule(2, "06:30")` og `Entrélys` til `07:00` med `schedule(0, "07:00")`. Skriv ut begge tidene. Planleggingen **lagrer bare klokkeslett**; den slår ikke på enheter automatisk.
-4. Når brukeren våkner: kall `turnOn(0)` for entrélyset og `turnOn(2)` for termostaten. Bruk deretter `changeBrightness(0, 80)` og `changeTemperature(2, 21.0)` i appen. Slå gjerne på kjøkkenlyset med `turnOn(1)`.
-5. Registrer bevegelse med `Gangsensor.detectMotion()` og vis sensorstatusen. Sensoren rapporterer bevegelse uavhengig av om den er slått på eller av. Vis gjerne en mellomstatus for hele hjemmet.
-6. Ved avreise: kall `Gangsensor.clearMotion()` hvis historien skal vise at gangen er tom. La deretter brukeren velge én felles handling **via appen**: legg for eksempel til `turnOffAll()` i `SmartHomeApp`, som delegerer til `home.turnOffAllDevices()`. Bruk denne metoden i demoen, ikke et direkte kall til hjemmet fra demoen.
-7. Avslutt med overskriften «Sluttstatus etter avreise» og `home.displayAllDevices()`. Kontroller at alle fire enheter er **av**, sensoren viser **ikke oppdaget**, og at begge planlagte tider fortsatt vises. Lysstyrke og temperatur skal fortsatt være henholdsvis 80 og 21.0 selv om enhetene er av.
+## Samlet design for endelig rapport
 
-En egen `MorningDemo` eller en oppdatert `MyPhoneDemo` kan brukes som startpunkt. Hold oppgave 3-menyen og telefonens øvrige funksjoner adskilt fra denne korte, automatiske historien. Ikke beskriv morgen-demoen som ferdig før den faktisk er implementert og kjørt.
-
-## Samlet design slik koden er nå
+Diagrammet viser klassene og relasjonene brukt av den **implementerte** morgen-demoen. `SmartHome` eier samlingen av enheter, mens `SmartHomeApp` får referanse til det samme hjemmet som demoen opprettet. `Schedulable` gjelder bare lampene og termostaten, ikke sensoren.
 
 ```mermaid
 classDiagram
@@ -191,6 +181,9 @@ classDiagram
 	App <|-- SmartHomeApp
 	MyPhone o-- App : installerte apper
 	SmartHomeApp --> SmartHome : samme hjem
+	MorningDemo ..> MyPhone : oppretter
+	MorningDemo ..> SmartHomeApp : demonstrerer
+	MorningDemo ..> SmartHome : setter opp
 
 	class SmartDevice {
 		-String name
@@ -218,35 +211,55 @@ classDiagram
 		-boolean motionDetected
 		+detectMotion()
 		+clearMotion()
+		+isMotionDetected() boolean
 	}
 	class SmartHome {
 		-List~SmartDevice~ devices
 		+addDevice(SmartDevice device)
 		+displayAllDevices()
+		+turnOnDevice(SmartDevice device)
+		+turnOffDevice(SmartDevice device)
 		+turnOffAllDevices()
 		+scheduleDevice(Schedulable device, String time)
+		+getDevice(int index) SmartDevice
+	}
+	class MyPhone {
+		-ArrayList~App~ apps
+		+installApp(App app)
+		+startApp(String appName)
 	}
 	class SmartHomeApp {
 		-SmartHome home
 		+run()
 		+turnOn(int deviceNumber)
 		+turnOff(int deviceNumber)
+		+turnOffAll()
 		+changeBrightness(int deviceNumber, int brightness)
 		+changeTemperature(int deviceNumber, double temperature)
 		+schedule(int deviceNumber, String time)
 	}
+	class MorningDemo {
+		+main(String[] args)
+	}
 ```
 
-Dette er **dagens implementerte design**, ikke en påstand om at oppgave 5 er ferdig. Når `turnOffAll()` og morgen-demoen er laget, oppdater diagrammet og beskrivelsen slik at den endelige rapporten gjenspeiler de faktiske metodene og demonstrasjonen.
+## Kjøring og kontroll
 
-## Kontroll og kjøring
-
-Kompiler fra mappen `mysmarthome` med kommandoene under. Den siste linjen starter **eksisterende** telefon-demo; bytt ut klassenavnet når morgen-demoen er laget.
+Åpne PowerShell i mappen `mysmarthome` og kjør:
 
 ```powershell
 New-Item -ItemType Directory -Force -Path out
 javac -d out src\mysmarthome\*.java myphone\*.java
-java -cp out mysmarthome.myphone.MyPhoneDemo
+java -cp out mysmarthome.myphone.MorningDemo
 ```
 
-Før innlevering: kjør morgen-demoen og kontroller startverdier, de ulike planlagte tidene, app-handlingene, sensorens status og sluttoversikten mot punktene over. Ta med det **oppdaterte** diagrammet og et representativt kjøreeksempel i sluttrapporten.
+Sjekk overskriften «Sluttstatus etter avreise» nederst i utskriften:
+
+| Enhet | Sluttstatus | Beholdt verdi |
+| --- | --- | --- |
+| Entrélys | Av | Lysstyrke 80, planlagt tid `07:00` |
+| Kjøkkenlys | Av | Lysstyrke 50, ingen planlagt tid |
+| Stuevarme | Av | Temperatur 21.0, planlagt tid `06:30` |
+| Gangsensor | Av, bevegelse ikke oppdaget | – |
+
+Til sluttrapporten kan du bruke diagrammet over og vise kjøreutskriften med begge planlagte tider, bevegelse oppdaget mens brukeren er hjemme, den felles app-handlingen og sluttoversikten.

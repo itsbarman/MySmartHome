@@ -30,6 +30,10 @@ public class SmartHomeApp extends App {
         home.turnOffDevice(device);
     }
 
+    public void turnOffAll() {
+        home.turnOffAllDevices();
+    }
+
     public void changeBrightness(int deviceNumber, int brightness) {
         SmartDevice device = home.getDevice(deviceNumber);
         if (device instanceof Lamp) {
