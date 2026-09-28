@@ -2,24 +2,7 @@
 
 Et lite Java-prosjekt som demonstrerer smarte enheter i ett hjem, styrt både direkte og via en app på `MyPhone`. Hovedprogrammet viser en morgen der lys og varme justeres før alle enhetene slås av ved avreise.
 
-## Kom i gang
 
-Du trenger en JDK med `javac` og `java` tilgjengelig i terminalen. Ingen eksterne avhengigheter eller byggverktøy kreves.
-
-Kjør fra prosjektmappen i PowerShell:
-
-```powershell
-New-Item -ItemType Directory -Force out | Out-Null
-javac -encoding UTF-8 -d out src\mysmarthome\*.java src\mysmarthome\myphone\*.java
-java -cp out mysmarthome.myphone.MorningDemo
-```
-
-Andre programmer du kan starte etter samme kompilering:
-
-| Program | Beskrivelse |
-| --- | --- |
-| `java -cp out mysmarthome.myphone.MyPhoneDemo` | Viser telefon og app i bruk. |
-| `java -cp out mysmarthome.SmartHomeDemo` | Interaktiv meny for hjemmet; velg 7 for å avslutte. |
 
 ## Hva demoen viser
 
