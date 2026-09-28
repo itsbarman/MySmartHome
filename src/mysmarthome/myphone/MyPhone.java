@@ -118,4 +118,3 @@ public void connectHeadset(String headset) {
     }
 
 }
-

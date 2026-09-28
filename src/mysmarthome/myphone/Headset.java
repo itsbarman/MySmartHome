@@ -19,6 +19,4 @@ public class Headset {
     public boolean isConnected() {
         return connected;
     }
-
-
 }
