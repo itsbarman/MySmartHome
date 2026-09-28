@@ -1,4 +1,44 @@
-# Endelig designoversikt
+# MySmartHome
+
+Et lite Java-prosjekt som demonstrerer smarte enheter i ett hjem, styrt både direkte og via en app på `MyPhone`. Hovedprogrammet viser en morgen der lys og varme justeres før alle enhetene slås av ved avreise.
+
+## Kom i gang
+
+Du trenger en JDK med `javac` og `java` tilgjengelig i terminalen. Ingen eksterne avhengigheter eller byggverktøy kreves.
+
+Kjør fra prosjektmappen i PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force out | Out-Null
+javac -encoding UTF-8 -d out src\mysmarthome\*.java src\mysmarthome\myphone\*.java
+java -cp out mysmarthome.myphone.MorningDemo
+```
+
+Andre programmer du kan starte etter samme kompilering:
+
+| Program | Beskrivelse |
+| --- | --- |
+| `java -cp out mysmarthome.myphone.MyPhoneDemo` | Viser telefon og app i bruk. |
+| `java -cp out mysmarthome.SmartHomeDemo` | Interaktiv meny for hjemmet; velg 7 for å avslutte. |
+
+## Hva demoen viser
+
+Morgen-demoen oppretter to lamper, én termostat og én bevegelsessensor i samme hjem. Appen installeres på telefonen, lagrer ulike planlagte tider for lys og varme og brukes til å slå på enheter, endre lysstyrke og temperatur samt slå av alle ved avreise. Status før og etter handlingene skrives ut i terminalen. Planlagte tider lagres som informasjon; programmet utfører ikke automatisk handlinger når klokkeslettene inntreffer.
+
+## Prosjektstruktur
+
+```text
+mysmarthome/
+├── README.md
+├── docs/                  # Oppgavetekst
+└── src/
+    └── mysmarthome/       # Smartenheter, hjem og interaktiv demo
+        └── myphone/       # Telefon, app og telefon-/morgen-demoer
+```
+
+Kompilerte filer havner i den Git-ignorerte mappen `out/`.
+
+## UML-klassediagram
 
 ```mermaid
 classDiagram
@@ -74,7 +114,3 @@ classDiagram
         +main(String[] args)
     }
 ```
-
-## Kort forklaring av modellen
-
-`SmartDevice` samler navn og på/av-status, mens `Lamp`, `Thermostat` og `MotionSensor` viser hver sin typespesifikke status. `SmartHome` lagrer enhetene som `SmartDevice`-objekter og kan vise en samlet oversikt eller slå dem av med én handling. Bare lampen og termostaten implementerer `Schedulable` og kan lagre planlagte tider. `MyPhone` installerer apper, og `SmartHomeApp` arver fra `App` og bruker det samme `SmartHome`-objektet for å styre enhetene. `MorningDemo` oppretter hjemmet og telefonen og viser hvordan enhetene brukes gjennom appen fra morgen til avreise.
