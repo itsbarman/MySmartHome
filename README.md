@@ -151,3 +151,102 @@ java -cp out mysmarthome.myphone.MyPhoneDemo
 ```
 
 Demoen installerer og starter appen på telefonen. Deretter endrer appen lampen til på, setter lysstyrken til `80`, setter termostaten til `21.0` og planlegger lampen til `07:00`. Til slutt vises hjemmet på nytt for å kontrollere at endringene er beholdt.
+
+# Oppgave 5 – Demo-dag: En morgen i MySmartHome
+
+## Hva gjenstår?
+
+Oppgave 3-demoen har allerede to lamper, en termostat, en bevegelsessensor og to forskjellige planlagte tider. Oppgave 4-demoen installerer SmartHome-appen på MyPhone, men har bare én lampe og én termostat. **Ingen av demoene viser ennå hele morgenhistorien gjennom appen.** I tillegg har `SmartHome` en `turnOffAllDevices()`-metode, men `SmartHomeApp` har foreløpig ingen metode som lar brukeren kalle den fra appen.
+
+| Krav | Status nå | Det du må gjøre |
+| --- | --- | --- |
+| To lamper, én termostat og én bevegelsessensor i samme hjem | Finnes i `SmartHomeDemo` | Opprett og registrer alle fire i **ett** `SmartHome`-objekt i morgen-demoen. |
+| SmartHome-app installert og startet på MyPhone | Finnes i `MyPhoneDemo` | Gi appen akkurat dette hjemmet, installer app-objektet med `installApp()` og start det med `startApp("SmartHome")`. |
+| To forskjellige planlagte tider | Finnes i `SmartHomeDemo` | Planlegg for eksempel termostaten til `06:30` og en lampe til `07:00` gjennom `SmartHomeApp.schedule()`. Vis tidene med `getScheduledTime()` eller i oversikten. |
+| Felles handling og minst to typespesifikke handlinger via appen | Appen kan slå på/av en enhet, endre lysstyrke og temperatur | Bruk `turnOn()`/`turnOff()` samt både `changeBrightness()` og `changeTemperature()` i morgenhistorien. Legg til en app-metode for å slå av alle ved avreise. |
+| Sensorstatus og tydelig sluttoversikt | Sensor og statusvisning finnes | Vis `isMotionDetected()`/`displayStatus()` og avslutt med `home.displayAllDevices()` etter avreise. |
+
+## Forslag til morgenhistorie
+
+1. Lag ett hjem med `Entrélys` (lysstyrke 30), `Kjøkkenlys` (lysstyrke 50), `Stuevarme` (temperatur 19.5) og `Gangsensor` (ingen bevegelse). Registrer dem i denne rekkefølgen; appens enhetsnumre er **nullbaserte**: 0, 1, 2 og 3.
+2. Opprett `MyPhone` og `SmartHomeApp("1.0", home)`, installer **samme app-objekt** på telefonen og start den. `startApp()` viser hjemmet via appens `run()`; videre handlinger kan kalles på den samme `SmartHomeApp`-referansen.
+3. Planlegg `Stuevarme` til `06:30` med `schedule(2, "06:30")` og `Entrélys` til `07:00` med `schedule(0, "07:00")`. Skriv ut begge tidene. Planleggingen **lagrer bare klokkeslett**; den slår ikke på enheter automatisk.
+4. Når brukeren våkner: kall `turnOn(0)` for entrélyset og `turnOn(2)` for termostaten. Bruk deretter `changeBrightness(0, 80)` og `changeTemperature(2, 21.0)` i appen. Slå gjerne på kjøkkenlyset med `turnOn(1)`.
+5. Registrer bevegelse med `Gangsensor.detectMotion()` og vis sensorstatusen. Sensoren rapporterer bevegelse uavhengig av om den er slått på eller av. Vis gjerne en mellomstatus for hele hjemmet.
+6. Ved avreise: kall `Gangsensor.clearMotion()` hvis historien skal vise at gangen er tom. La deretter brukeren velge én felles handling **via appen**: legg for eksempel til `turnOffAll()` i `SmartHomeApp`, som delegerer til `home.turnOffAllDevices()`. Bruk denne metoden i demoen, ikke et direkte kall til hjemmet fra demoen.
+7. Avslutt med overskriften «Sluttstatus etter avreise» og `home.displayAllDevices()`. Kontroller at alle fire enheter er **av**, sensoren viser **ikke oppdaget**, og at begge planlagte tider fortsatt vises. Lysstyrke og temperatur skal fortsatt være henholdsvis 80 og 21.0 selv om enhetene er av.
+
+En egen `MorningDemo` eller en oppdatert `MyPhoneDemo` kan brukes som startpunkt. Hold oppgave 3-menyen og telefonens øvrige funksjoner adskilt fra denne korte, automatiske historien. Ikke beskriv morgen-demoen som ferdig før den faktisk er implementert og kjørt.
+
+## Samlet design slik koden er nå
+
+```mermaid
+classDiagram
+	SmartDevice <|-- Lamp
+	SmartDevice <|-- Thermostat
+	SmartDevice <|-- MotionSensor
+	Schedulable <|.. Lamp
+	Schedulable <|.. Thermostat
+	SmartHome o-- SmartDevice : lagrer enhetene
+	App <|-- SmartHomeApp
+	MyPhone o-- App : installerte apper
+	SmartHomeApp --> SmartHome : samme hjem
+
+	class SmartDevice {
+		-String name
+		-boolean isOn
+		+turnOn()
+		+turnOff()
+		+displayStatus()
+	}
+	class Schedulable {
+		<<interface>>
+		+schedule(String time)
+		+getScheduledTime() String
+	}
+	class Lamp {
+		-int brightness
+		-String scheduledTime
+		+setBrightness(int brightness)
+	}
+	class Thermostat {
+		-double temperature
+		-String scheduledTime
+		+setTemperature(double temperature)
+	}
+	class MotionSensor {
+		-boolean motionDetected
+		+detectMotion()
+		+clearMotion()
+	}
+	class SmartHome {
+		-List~SmartDevice~ devices
+		+addDevice(SmartDevice device)
+		+displayAllDevices()
+		+turnOffAllDevices()
+		+scheduleDevice(Schedulable device, String time)
+	}
+	class SmartHomeApp {
+		-SmartHome home
+		+run()
+		+turnOn(int deviceNumber)
+		+turnOff(int deviceNumber)
+		+changeBrightness(int deviceNumber, int brightness)
+		+changeTemperature(int deviceNumber, double temperature)
+		+schedule(int deviceNumber, String time)
+	}
+```
+
+Dette er **dagens implementerte design**, ikke en påstand om at oppgave 5 er ferdig. Når `turnOffAll()` og morgen-demoen er laget, oppdater diagrammet og beskrivelsen slik at den endelige rapporten gjenspeiler de faktiske metodene og demonstrasjonen.
+
+## Kontroll og kjøring
+
+Kompiler fra mappen `mysmarthome` med kommandoene under. Den siste linjen starter **eksisterende** telefon-demo; bytt ut klassenavnet når morgen-demoen er laget.
+
+```powershell
+New-Item -ItemType Directory -Force -Path out
+javac -d out src\mysmarthome\*.java myphone\*.java
+java -cp out mysmarthome.myphone.MyPhoneDemo
+```
+
+Før innlevering: kjør morgen-demoen og kontroller startverdier, de ulike planlagte tidene, app-handlingene, sensorens status og sluttoversikten mot punktene over. Ta med det **oppdaterte** diagrammet og et representativt kjøreeksempel i sluttrapporten.
